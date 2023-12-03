@@ -1,4 +1,4 @@
-#![crate_name = "progress"]
+#![crate_name = "better_progress"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
@@ -13,7 +13,7 @@
 //!
 //! ```
 //! [dependencies]
-//! progress = "0.1.0"
+//! better_progress = "0.1.0"
 //! ```
 //!
 //! Usage
@@ -240,8 +240,7 @@ impl Bar {
         let overhead = self._progress_percentage / 100;
         let left_percentage = self._progress_percentage - overhead * 100;
         let bar_len = width - (50 + 5) - 2;
-        let bar_finished_len = ((bar_len as f32) *
-                                (left_percentage as f32 / 100.0)) as i32;
+        let bar_finished_len = ((bar_len as f32) * (left_percentage as f32 / 100.0)) as i32;
         let filled_symbol = if overhead & 0b1 == 0 {
             &self._filled_symbol
         } else {
@@ -330,7 +329,7 @@ impl Text {
 }
 
 impl Text {
-    fn _show_progress(& self) {
+    fn _show_progress(&self) {
         io::stdout().flush().unwrap();
         print!("\r");
         // TODO How to handle extra text?
@@ -414,13 +413,13 @@ impl SpinningCircle {
     ///
     /// e.g.
     /// * Collection kitties
-    pub fn jobs_done(& self) {
-        self._show_finished();
+    pub fn jobs_done(&self, clean: bool) {
+        self._show_finished(clean);
     }
 }
 
 impl SpinningCircle {
-    fn _print_symbol_and_texts(& self, symbol: &char) {
+    fn _print_symbol_and_texts(&self, symbol: &char) {
         io::stdout().flush().unwrap();
         print!("\r");
         print!("{}", symbol);
@@ -428,15 +427,17 @@ impl SpinningCircle {
         print!(" {:<81}", self._job_title);
     }
 
-    fn _show_progress(& self) {
-        let circle_symbol: &char = self._circle_symbols.get(
-            self._tick_count % self._circle_symbols.len()).unwrap();
+    fn _show_progress(&self) {
+        let circle_symbol: &char = self
+            ._circle_symbols
+            .get(self._tick_count % self._circle_symbols.len())
+            .unwrap();
 
         self._print_symbol_and_texts(circle_symbol);
     }
 
-    fn _show_finished(& self) {
-        self._print_symbol_and_texts(&self._finished_symbol);
+    fn _show_finished(&self, clean: bool) {
+        self._print_symbol_and_texts(if clean { &' ' } else { &self._finished_symbol });
         print!("\n");
     }
 }
