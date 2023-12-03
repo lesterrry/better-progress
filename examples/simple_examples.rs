@@ -1,9 +1,9 @@
-extern crate progress;
+extern crate better_progress;
 
 use std::thread;
 
 fn main() {
-    let mut pbar = progress::Bar::new();
+    let mut pbar = better_progress::Bar::new();
 
     // Add percentage each time
     {
